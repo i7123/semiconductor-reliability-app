@@ -110,14 +110,8 @@ yarn-debug.log*
 yarn-error.log*
 package-lock.json
 
-# Vercel deployment files and configs
+# Vercel runtime files (keep deployment configs)
 .vercel/
-vercel.json
-api/
-VERCEL_DEPLOY.md
-deploy.sh
-package.json
-requirements.txt
 
 # Frontend build (when added)
 frontend/build/
