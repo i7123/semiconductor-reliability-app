@@ -1,0 +1,119 @@
+# =====================================================
+# SEMICONDUCTOR RELIABILITY CALCULATOR - GITIGNORE
+# Based on actual files in codebase for deployment
+# =====================================================
+
+# ==================== PYTHON CACHE & COMPILED ====================
+# Python bytecode cache directories (currently in project)
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+
+# ==================== VIRTUAL ENVIRONMENT ====================
+# Virtual environment directory (exists in backend/)
+backend/venv/
+venv/
+env/
+.venv/
+
+# ==================== SYSTEM FILES ====================
+# macOS system files (currently in project)
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows system files
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ==================== DATABASES ====================
+# Local SQLite databases (semiconductor_calc.db exists)
+*.db
+*.sqlite
+*.sqlite3
+semiconductor_calc.db
+backend/semiconductor_calc.db
+
+# ==================== LOGS ====================
+# Log files (server.log exists in backend/)
+*.log
+server.log
+backend/server.log
+logs/
+
+# ==================== TESTING ====================
+# Test cache and coverage (pytest cache exists)
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.hypothesis/
+*.cover
+.cache
+
+# ==================== SECURITY & ENVIRONMENT ====================
+# Environment variables and secrets
+.env
+.env.*
+.env.local
+.env.production
+.env.development
+!.env.example
+
+# API keys and credentials
+config.json
+secrets.json
+*.pem
+*.key
+
+# ==================== DEVELOPMENT TOOLS ====================
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# ==================== DEPLOYMENT FILES ====================
+# Deployment scripts and configs
+deploy.sh
+deployment.yml
+docker-compose.override.yml
+.dockerignore
+
+# CI/CD files
+.github/workflows/deploy.yml
+
+# ==================== TEMPORARY FILES ====================
+# Backup and temporary files
+*.bak
+*.backup
+*.tmp
+*.old
+*~
+
+# ==================== NODE.JS & VERCEL ====================
+# Node.js dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+# Vercel
+.vercel/
+
+# Frontend build (when added)
+frontend/build/
+frontend/dist/
+
+# Additional Python packaging
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Migration files (if database migrations added)
+# migrations/
