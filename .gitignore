@@ -53,6 +53,15 @@ htmlcov/
 *.cover
 .cache
 
+# Test files - exclude from production deployment
+test_*.py
+*_test.py
+*_tests.py
+run_all_tests.py
+test_*.js
+backend/test_*.py
+backend/tests/
+
 # ==================== SECURITY & ENVIRONMENT ====================
 # Environment variables and secrets
 .env
@@ -101,8 +110,14 @@ yarn-debug.log*
 yarn-error.log*
 package-lock.json
 
-# Vercel
+# Vercel deployment files and configs
 .vercel/
+vercel.json
+api/
+VERCEL_DEPLOY.md
+deploy.sh
+package.json
+requirements.txt
 
 # Frontend build (when added)
 frontend/build/
