@@ -77,8 +77,7 @@ secrets.json
 *~
 
 # ==================== DEPLOYMENT FILES ====================
-# Deployment scripts and configs
-deploy.sh
+# Deployment configs (keep deploy.sh for convenience)
 deployment.yml
 docker-compose.override.yml
 .dockerignore
