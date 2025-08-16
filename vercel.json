@@ -6,14 +6,14 @@
       "use": "@vercel/static"
     },
     {
-      "src": "backend/app/main.py",
+      "src": "api/main.py",
       "use": "@vercel/python"
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "backend/app/main.py"
+      "dest": "api/main.py"
     },
     {
       "src": "/(.*)",
@@ -21,13 +21,8 @@
     }
   ],
   "functions": {
-    "backend/app/main.py": {
+    "api/main.py": {
       "runtime": "python3.9"
     }
-  },
-  "env": {
-    "SECRET_KEY": "@secret-key",
-    "DATABASE_URL": "@database-url",
-    "DAILY_CALCULATION_LIMIT": "10"
   }
 }
