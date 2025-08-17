@@ -3,6 +3,12 @@ class SemiconductorCalculatorApp {
         // Use relative URL for production, localhost for development
         this.apiBase = window.location.hostname === 'localhost' ? 
             'http://localhost:8000/api' : '/api';
+        
+        // Debug logging
+        console.log('🔍 Debug Info:');
+        console.log('- Hostname:', window.location.hostname);
+        console.log('- API Base URL:', this.apiBase);
+        console.log('- Full URL:', window.location.href);
         this.authToken = localStorage.getItem('authToken');
         this.currentCalculator = null;
         
@@ -74,18 +80,48 @@ class SemiconductorCalculatorApp {
     
     async loadCalculators() {
         try {
+            console.log('🔄 Loading calculators from:', `${this.apiBase}/calculators/`);
             const response = await fetch(`${this.apiBase}/calculators/`);
+            
+            console.log('📡 Response status:', response.status);
+            console.log('📡 Response headers:', [...response.headers.entries()]);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
             const calculators = await response.json();
+            console.log('📊 Loaded calculators:', calculators);
             
             const grid = document.getElementById('calculators-grid');
             grid.innerHTML = '';
+            
+            if (!Array.isArray(calculators)) {
+                throw new Error('Invalid response: expected array of calculators');
+            }
             
             calculators.forEach(calc => {
                 const card = this.createCalculatorCard(calc);
                 grid.appendChild(card);
             });
+            
+            console.log('✅ Successfully loaded', calculators.length, 'calculators');
         } catch (error) {
-            console.error('Failed to load calculators:', error);
+            console.error('❌ Failed to load calculators:', error);
+            console.error('Full error details:', error.message);
+            
+            // Show error to user
+            const grid = document.getElementById('calculators-grid');
+            grid.innerHTML = `
+                <div class="col-12">
+                    <div class="alert alert-danger">
+                        <h5>⚠️ Unable to load calculators</h5>
+                        <p><strong>Error:</strong> ${error.message}</p>
+                        <p><strong>API URL:</strong> ${this.apiBase}/calculators/</p>
+                        <p>Please check the browser console for more details.</p>
+                    </div>
+                </div>
+            `;
         }
     }
     
