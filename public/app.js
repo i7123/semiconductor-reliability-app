@@ -94,59 +94,135 @@ class SemiconductorCalculatorApp {
             console.log('📊 Loaded calculators:', calculators);
             
             const grid = document.getElementById('calculators-grid');
+            if (!grid) {
+                throw new Error('calculators-grid element not found in DOM');
+            }
+            
             grid.innerHTML = '';
             
             if (!Array.isArray(calculators)) {
                 throw new Error('Invalid response: expected array of calculators');
             }
             
+            if (calculators.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-12">
+                        <div class="alert alert-info">
+                            <h5>📋 No calculators available</h5>
+                            <p>No calculators were returned from the API.</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
             calculators.forEach(calc => {
-                const card = this.createCalculatorCard(calc);
-                grid.appendChild(card);
+                try {
+                    const card = this.createCalculatorCard(calc);
+                    grid.appendChild(card);
+                } catch (cardError) {
+                    console.error('Error creating card for calculator:', calc, cardError);
+                }
             });
             
             console.log('✅ Successfully loaded', calculators.length, 'calculators');
+            
+            // Hide reload button and update status
+            const reloadBtn = document.getElementById('reload-calculators');
+            if (reloadBtn) {
+                reloadBtn.style.display = 'none';
+            }
+            
+            // Update status message
+            const statusElement = document.querySelector('.text-muted');
+            if (statusElement && statusElement.textContent.includes('Loading calculators')) {
+                statusElement.textContent = `Loaded ${calculators.length} calculators successfully`;
+            }
         } catch (error) {
             console.error('❌ Failed to load calculators:', error);
             console.error('Full error details:', error.message);
+            console.error('Stack trace:', error.stack);
             
             // Show error to user
             const grid = document.getElementById('calculators-grid');
-            grid.innerHTML = `
-                <div class="col-12">
-                    <div class="alert alert-danger">
-                        <h5>⚠️ Unable to load calculators</h5>
-                        <p><strong>Error:</strong> ${error.message}</p>
-                        <p><strong>API URL:</strong> ${this.apiBase}/calculators/</p>
-                        <p>Please check the browser console for more details.</p>
+            const reloadBtn = document.getElementById('reload-calculators');
+            
+            if (grid) {
+                grid.innerHTML = `
+                    <div class="col-12">
+                        <div class="alert alert-danger">
+                            <h5>⚠️ Unable to load calculators</h5>
+                            <p><strong>Error:</strong> ${error.message}</p>
+                            <p><strong>API URL:</strong> ${this.apiBase}/calculators/</p>
+                            <p><strong>Troubleshooting:</strong></p>
+                            <ul>
+                                <li>Backend server running on port 8000</li>
+                                <li>CORS configuration</li>
+                                <li>Network connectivity</li>
+                            </ul>
+                            <button onclick="app.loadCalculators()" class="btn btn-primary">Retry Loading</button>
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
+                
+                // Show the reload button in header
+                if (reloadBtn) {
+                    reloadBtn.style.display = 'inline-block';
+                }
+            }
         }
     }
     
     createCalculatorCard(calculator) {
+        if (!calculator || !calculator.id || !calculator.name) {
+            console.error('Invalid calculator data:', calculator);
+            throw new Error('Invalid calculator data: missing required fields');
+        }
+        
         const div = document.createElement('div');
         div.className = 'col-md-4 mb-3';
         
         const isInDevelopment = calculator.category === "Future Development";
         const cardClass = isInDevelopment ? 'card calculator-card h-100 in-development' : 'card calculator-card h-100';
-        const onclick = isInDevelopment ? `app.showDevelopmentMessage('${calculator.name}')` : `app.selectCalculator('${calculator.id}')`;
         
+        // Use safer event handling instead of inline onclick with string interpolation
         const developmentBadge = isInDevelopment ? '<div class="in-development-badge">Calculator in Plan</div>' : '';
         
+        // Escape HTML to prevent XSS
+        const safeName = this.escapeHtml(calculator.name || '');
+        const safeDescription = this.escapeHtml(calculator.description || '');
+        const safeCategory = this.escapeHtml(calculator.category || '');
+        
         div.innerHTML = `
-            <div class="${cardClass}" onclick="${onclick}">
+            <div class="${cardClass}">
                 <div class="card-body">
                     ${developmentBadge}
-                    <h5 class="card-title">${calculator.name}</h5>
-                    <p class="card-text">${calculator.description}</p>
-                    <small class="text-muted">Category: ${calculator.category}</small>
+                    <h5 class="card-title">${safeName}</h5>
+                    <p class="card-text">${safeDescription}</p>
+                    <small class="text-muted">Category: ${safeCategory}</small>
                 </div>
             </div>
         `;
         
+        // Add click event listener safely
+        const cardElement = div.querySelector('.card');
+        if (cardElement) {
+            cardElement.addEventListener('click', () => {
+                if (isInDevelopment) {
+                    this.showDevelopmentMessage(calculator.name);
+                } else {
+                    this.selectCalculator(calculator.id);
+                }
+            });
+        }
+        
         return div;
+    }
+    
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
     }
     
     async selectCalculator(calculatorId) {
