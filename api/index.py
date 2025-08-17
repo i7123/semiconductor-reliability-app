@@ -1,10 +1,9 @@
 """
-Simplified FastAPI application for Vercel deployment
+Vercel serverless function for Semiconductor Reliability Calculator API
 """
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 import math
-import os
 
 app = FastAPI(
     title="Semiconductor Reliability Calculator API",
@@ -29,11 +28,7 @@ async def root():
 async def health_check():
     return {"status": "healthy"}
 
-@app.get("/api/health")
-async def api_health_check():
-    return {"status": "healthy"}
-
-@app.post("/api/calculators/calculate/mtbf")
+@app.post("/calculators/calculate/mtbf")
 async def calculate_mtbf(data: dict):
     """MTBF Calculator"""
     try:
@@ -76,7 +71,7 @@ async def calculate_mtbf(data: dict):
             "error": str(e)
         }
 
-@app.get("/api/calculators/")
+@app.get("/calculators/")
 async def list_calculators():
     """List available calculators"""
     return [
@@ -136,7 +131,7 @@ async def list_calculators():
         }
     ]
 
-@app.get("/api/calculators/{calculator_id}/info")
+@app.get("/calculators/{calculator_id}/info")
 async def get_calculator_info(calculator_id: str):
     """Get calculator information"""
     calculators = await list_calculators()
@@ -145,5 +140,10 @@ async def get_calculator_info(calculator_id: str):
             return calc
     return {"error": "Calculator not found"}, 404
 
-# For Vercel
-handler = app
+# Vercel serverless function handler
+try:
+    from mangum import Mangum
+    handler = Mangum(app)
+except ImportError:
+    # Fallback for local development
+    handler = app
