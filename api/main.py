@@ -48,7 +48,7 @@ async def root():
 async def health_check():
     return {"status": "healthy"}
 
-@app.get("/api/calculators/")
+@app.get("/calculators/")
 async def list_calculators():
     """List all available calculators"""
     return [
@@ -246,7 +246,7 @@ async def list_calculators():
         }
     ]
 
-@app.get("/api/calculators/{calculator_id}/info")
+@app.get("/calculators/{calculator_id}/info")
 async def get_calculator_info(calculator_id: str):
     """Get calculator information"""
     calculators = await list_calculators()
@@ -255,7 +255,7 @@ async def get_calculator_info(calculator_id: str):
             return calc
     raise HTTPException(status_code=404, detail="Calculator not found")
 
-@app.post("/api/calculators/calculate/mtbf")
+@app.post("/calculators/calculate/mtbf")
 async def calculate_mtbf(request: CalculationRequest):
     """MTBF Calculator"""
     try:
@@ -315,7 +315,7 @@ async def calculate_mtbf(request: CalculationRequest):
     except Exception as e:
         raise HTTPException(status_code=400, detail={"error": str(e), "calculator_id": "mtbf"})
 
-@app.post("/api/calculators/calculate/duane_model")
+@app.post("/calculators/calculate/duane_model")
 async def calculate_duane_model(request: CalculationRequest):
     """Duane Model Calculator"""
     try:
@@ -375,7 +375,7 @@ async def calculate_duane_model(request: CalculationRequest):
     except Exception as e:
         raise HTTPException(status_code=400, detail={"error": str(e), "calculator_id": "duane_model"})
 
-@app.post("/api/calculators/calculate/test_sample_size")
+@app.post("/calculators/calculate/test_sample_size")
 async def calculate_test_sample_size(request: CalculationRequest):
     """Test Sample Size Calculator"""
     try:
@@ -420,7 +420,7 @@ async def calculate_test_sample_size(request: CalculationRequest):
     except Exception as e:
         raise HTTPException(status_code=400, detail={"error": str(e), "calculator_id": "test_sample_size"})
 
-@app.post("/api/calculators/calculate/{calculator_id}")
+@app.post("/calculators/calculate/{calculator_id}")
 async def calculate_dummy(calculator_id: str, request: CalculationRequest):
     """Dummy calculator for development calculators"""
     if calculator_id.startswith("dummy_calculator_"):
@@ -443,7 +443,7 @@ async def calculate_dummy(calculator_id: str, request: CalculationRequest):
     else:
         raise HTTPException(status_code=404, detail="Calculator not found")
 
-@app.get("/api/calculators/calculate/{calculator_id}/example")
+@app.get("/calculators/calculate/{calculator_id}/example")
 async def get_calculator_example(calculator_id: str):
     """Get example inputs and results for calculators"""
     examples = {
