@@ -25,7 +25,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.add_middleware(UsageTrackerMiddleware)  # Disabled for now
+#app.add_middleware(UsageTrackerMiddleware)  # Disabled for now
 
 app.include_router(auth_router, prefix="/api/auth", tags=["authentication"])
 app.include_router(calculator_router, prefix="/api/calculators", tags=["calculators"])

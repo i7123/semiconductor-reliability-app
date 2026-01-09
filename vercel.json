@@ -1,21 +1,13 @@
 {
-  "functions": {
-    "api/main.py": {
-      "runtime": "@vercel/python"
-    }
-  },
+  "version": 2,
+  "builds": [
+    { "src": "api/index.py", "use": "@vercel/python" },
+    { "src": "public/*", "use": "@vercel/static" }
+  ],
   "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/main.py"
-    },
-    {
-      "src": "/",
-      "dest": "/public/index.html"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/public/$1"
-    }
+    { "src": "/calculators/(.*)", "dest": "/api/index.py" },
+    { "src": "/health", "dest": "/api/index.py" },
+    { "src": "/(.*)", "dest": "/public/$1" },
+    { "src": "/", "dest": "/public/index.html" }
   ]
 }
